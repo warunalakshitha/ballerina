@@ -1,0 +1,56 @@
+{
+  "repo": "ballerina-nutcracker/ballerina",
+  "pr": 1002,
+  "head_sha": "e55b77619b88febb49e1d3bc1a2eeff5c97ce2af",
+  "reviewed_diff": "7fa3d9a06f75678ab102ada167b56e777fbb065e3a74b2fe573990148cfb9c82",
+  "skill_version": "<sha256 of SKILL.md, same as review-report.md>",
+  "stack": {
+    "prs": [
+      1024,
+      1023,
+      1063
+    ],
+    "heads": {
+      "1024": "<full head sha>",
+      "1023": "<full head sha>",
+      "1063": "<full head sha>"
+    },
+    "tip_sha": "<full sha of the top PR's head>",
+    "fixed_later": [
+      {
+        "pr": 1023,
+        "text": "`init` can assign a deferred `final` twice",
+        "id": "init-final-assigned-twice"
+      }
+    ]
+  },
+  "summary": {
+    "line": "",
+    "checked": [
+      "fails on main",
+      "jBallerina parity"
+    ],
+    "items": [
+      "Nutcracker doesn't check `new stream<T, C>(obj)` against `obj.next()`'s return type — worth an issue"
+    ]
+  },
+  "findings": [
+    {
+      "id": "e-test-invalid-next",
+      "severity": "important",
+      "kind": "Test",
+      "anchor": "line",
+      "path": "corpus/bal/subset8/08-stream/stream-default-completion-e.bal",
+      "line": 18,
+      "start_line": null,
+      "title": "`next()` makes line 28 invalid",
+      "body": "`...|error?` doesn't satisfy `stream<int, error>`, so jBallerina also rejects line 28. Drop the `?`; both compilers then report only line 29.",
+      "code": null,
+      "outputs": {
+        "jBallerina": "ERROR (28:33) incompatible types: expected '(record {| int value; |}|error)', found '(record {| int value; |}|error)?'\nERROR (29:14) incompatible types: expected 'stream<int>', found 'stream<int,error>'",
+        "Nutcracker": "error[SEMANTIC_ERROR] 29:9 incompatible arguments for function call"
+      },
+      "suggestion": "    public isolated function next() returns record {|int value;|}|error {"
+    }
+  ]
+}
